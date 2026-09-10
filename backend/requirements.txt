@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pymongo
+motor
+razorpay
+python-dotenv
+passlib[bcrypt]==1.7.4
+bcrypt==4.1.2
+PyJWT
+email-validator
