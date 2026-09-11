@@ -1,4 +1,4 @@
-"""FastAPI application defining the Sparible e-commerce API endpoints.
+"""FastAPI application defining the e-commerce API endpoints.
 
 Provides routes for authentication, products, categories, cart, wishlist,
 orders, payments, reviews, blogs, and admin statistics.

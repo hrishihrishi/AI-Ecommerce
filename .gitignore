@@ -95,3 +95,5 @@ Readme.md
 SETUP_GUIDE.md
 test_result.md
 yarn.lock
+tests
+test_reports
