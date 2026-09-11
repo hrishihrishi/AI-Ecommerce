@@ -87,7 +87,6 @@ android-sdk/ -e
 *.env.*
 
 
-frontend
 *.emergent
 *.test_reports
 FILE_LIST.txt
@@ -97,3 +96,8 @@ test_result.md
 yarn.lock
 tests
 test_reports
+
+
+frontend
+ecommerce-chat-helper-main
+server
