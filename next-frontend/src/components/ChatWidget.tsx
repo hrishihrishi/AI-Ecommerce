@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, FormEvent } from "react";
 import { FaRobot, FaPaperPlane, FaTimes, FaCommentDots } from "react-icons/fa";
+import "globals"
 
 interface Message {
   text: string;

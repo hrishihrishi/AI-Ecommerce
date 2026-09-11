@@ -85,29 +85,38 @@ async def get_current_user_optional(authorization: Optional[str] = Header(None))
         return None
     return None
 
+
+
 # ============= AUTHENTICATION ROUTES =============
 
+# collect all user_data and save in db, return jwt token, user obj.
 @api_router.post("/auth/register")
 async def register(user_data: UserRegister):
-    # Check if user exists
+
+    # Check if user exists, If yes redirect to login.
     existing_user = await db.users.find_one({"email": user_data.email})
     if existing_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
     
-    # Create user
+    # hash the password
     hashed_password = get_password_hash(user_data.password)
+
+    # add email, name, phone directly to object
     user = User(
         email=user_data.email,
         name=user_data.name,
         phone=user_data.phone
     )
+
+    # add the user obj to user_dict obj
     user_dict = user.model_dump()
     user_dict['password'] = hashed_password
     user_dict['created_at'] = user_dict['created_at'].isoformat()
     
+    # save to object to db
     await db.users.insert_one(user_dict)
     
-    # Create access token
+    # Create jwt access token
     access_token = create_access_token(data={"user_id": user.id})
     
     return {
@@ -116,9 +125,12 @@ async def register(user_data: UserRegister):
         "user": user.model_dump()
     }
 
+# returns token and user info on successful login
 @api_router.post("/auth/login")
 async def login(credentials: UserLogin):
     user = await db.users.find_one({"email": credentials.email})
+
+    # If either user doesn't exists or password don't match throw error
     if not user or not verify_password(credentials.password, user['password']):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     
@@ -139,6 +151,8 @@ async def login(credentials: UserLogin):
 async def get_me(current_user: dict = Depends(get_current_user)):
     return current_user
 
+
+
 # ============= PRODUCTS ROUTES =============
 
 @api_router.get("/products", response_model=List[Product])
@@ -149,7 +163,7 @@ async def get_products(
     min_price: Optional[float] = None,
     max_price: Optional[float] = None,
     limit: int = 50
-):
+    ):
     query = {}
     if category:
         query['category'] = category
@@ -227,6 +241,8 @@ async def delete_product(product_id: str, current_user: dict = Depends(get_curre
     
     return {"message": "Product deleted successfully"}
 
+
+
 # ============= CATEGORIES ROUTES =============
 
 @api_router.get("/categories", response_model=List[Category])
@@ -236,6 +252,8 @@ async def get_categories(type: Optional[str] = None):
         query['type'] = type
     categories = await db.categories.find(query, {"_id": 0}).to_list(100)
     return categories
+
+
 
 # ============= BRANDS ROUTES =============
 
@@ -247,8 +265,12 @@ async def get_brands(type: Optional[str] = None):
     brands = await db.brands.find(query, {"_id": 0}).to_list(100)
     return brands
 
-# ============= CART ROUTES =============
 
+
+# ============= CART ROUTES =============
+# REQUIRES USERID
+
+# find if a user exists in the cart collection, if not create a new cart for the user and return it
 @api_router.get("/cart")
 async def get_cart(current_user: dict = Depends(get_current_user)):
     cart = await db.carts.find_one({"user_id": current_user['id']}, {"_id": 0})
@@ -322,7 +344,10 @@ async def clear_cart(current_user: dict = Depends(get_current_user)):
     )
     return {"message": "Cart cleared"}
 
+
+
 # ============= WISHLIST ROUTES =============
+# REQUIRES USERID
 
 @api_router.get("/wishlist")
 async def get_wishlist(current_user: dict = Depends(get_current_user)):
@@ -378,7 +403,10 @@ async def remove_from_wishlist(product_id: str, current_user: dict = Depends(get
     
     return {"message": "Item removed from wishlist"}
 
+
+
 # ============= ORDERS ROUTES =============
+# REQUIRES USERID
 
 @api_router.get("/orders", response_model=List[Order])
 async def get_orders(current_user: dict = Depends(get_current_user)):
@@ -411,6 +439,8 @@ async def create_order(order_data: OrderCreate, current_user: dict = Depends(get
     )
     
     return order
+
+
 
 # ============= RAZORPAY ROUTES =============
 
@@ -464,6 +494,8 @@ async def verify_payment(
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Payment verification failed")
 
+
+
 # ============= REVIEWS ROUTES =============
 
 @api_router.get("/reviews/{product_id}", response_model=List[Review])
@@ -502,6 +534,8 @@ async def create_review(review_data: ReviewCreate, current_user: dict = Depends(
     
     return review
 
+
+
 # ============= BLOG ROUTES =============
 
 @api_router.get("/blogs", response_model=List[BlogPost])
@@ -536,6 +570,8 @@ async def create_blog(blog_data: BlogPostCreate, current_user: dict = Depends(ge
     
     await db.blogs.insert_one(blog_dict)
     return blog
+
+
 
 # ============= ADMIN ROUTES =============
 
@@ -586,6 +622,8 @@ async def update_order_status(order_id: str, order_status: str, current_user: di
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
     
     return {"message": "Order status updated"}
+
+
 
 # ============= ROOT ROUTE =============
 

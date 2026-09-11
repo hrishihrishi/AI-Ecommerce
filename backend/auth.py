@@ -17,14 +17,16 @@ SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Return True if the plain password matches the hashed password."""
-    return pwd_context.verify(plain_password, hashed_password)
 
+# Hash a plaintext password and return the hash string.
 def get_password_hash(password: str) -> str:
-    """Hash a plaintext password and return the hash string."""
     return pwd_context.hash(password)
 
+# Return True if the plain password matches the hashed password.
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
+
+# creates new jwt token and returns it
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     """Create a JWT access token containing `data` and an expiration.
 
@@ -40,6 +42,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+# verifies jwt token
 def verify_token(token: str) -> dict:
     """Decode and validate a JWT token, returning its payload.
 
