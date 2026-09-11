@@ -39,7 +39,7 @@ class User(BaseModel):
 #Representation of a product available for purchase.
 class Product(BaseModel):
     model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    id: str 
     name: str
     description: str
     category: str
@@ -54,6 +54,7 @@ class Product(BaseModel):
 
 #Schema for creating a new product.
 class ProductCreate(BaseModel):
+    id: str 
     name: str
     description: str
     category: str
@@ -63,6 +64,8 @@ class ProductCreate(BaseModel):
     image: str
     stock: int = 0
 
+
+# -------------------------------------------Category and Brand Models-------------------------------------------
 #Category metadata for grouping products.
 class Category(BaseModel):
     model_config = ConfigDict(extra="ignore")
