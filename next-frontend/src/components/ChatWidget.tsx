@@ -10,7 +10,7 @@ interface Message {
 }
 
 const CHAT_SERVER =
-  process.env.NEXT_PUBLIC_CHAT_SERVER_URL || "http://localhost:8001";
+  process.env.NEXT_PUBLIC_CHAT_SERVER_URL;
 
 const ChatWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -56,6 +56,8 @@ const ChatWidget: React.FC = () => {
       : `${CHAT_SERVER}/chat`;
 
     try {
+
+      // send only the latest message and get response.
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -138,7 +140,7 @@ const ChatWidget: React.FC = () => {
           onClick={toggleChat}
           aria-label="Open chat"
         >
-          <FaCommentDots />
+          <FaRobot />
         </button>
       )}
     </div>

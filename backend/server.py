@@ -630,7 +630,7 @@ async def update_order_status(order_id: str, order_status: str, current_user: di
 @api_router.get("/")
 async def root():
     """Health/root endpoint returning basic service metadata."""
-    return {"message": "Sparible E-commerce API", "version": "1.0.0"}
+    return {"message": "Super Commerce E-commerce API", "version": "1.0.0"}
 
 # Include the router in the main app
 app.include_router(api_router)

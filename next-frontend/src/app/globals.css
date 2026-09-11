@@ -131,7 +131,7 @@ button:active {
 /* Chat Widget Styles */
 .chat-widget-container {
   position: fixed;
-  bottom: 20px;
+  top: 140px;
   right: 20px;
   width: auto;
   height: auto;

@@ -225,7 +225,7 @@ blogs = [
         "excerpt": "Learn the step-by-step process of safely replacing your smartphone battery at home with the right tools and precautions.",
         "content": "Replacing your smartphone battery can extend the life of your device significantly...",
         "image": "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800",
-        "author": "Sparible Team",
+        "author": "Super Commerce Team",
         "created_at": datetime.now(timezone.utc).isoformat()
     },
     {
@@ -234,7 +234,7 @@ blogs = [
         "excerpt": "Discover the common indicators that your laptop screen might need replacement and how to address them.",
         "content": "A damaged laptop screen can significantly impact your productivity...",
         "image": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800",
-        "author": "Sparible Team",
+        "author": "Super Commerce Team",
         "created_at": datetime.now(timezone.utc).isoformat()
     },
     {
@@ -243,7 +243,7 @@ blogs = [
         "excerpt": "Understanding the difference between original, OEM, and aftermarket spare parts for your mobile device.",
         "content": "When it comes to repairing your smartphone, choosing the right spare parts is crucial...",
         "image": "https://images.unsplash.com/photo-1512499617640-c74ae3a79d37?w=800",
-        "author": "Sparible Team",
+        "author": "Super Commerce Team",
         "created_at": datetime.now(timezone.utc).isoformat()
     },
 ]
@@ -282,7 +282,7 @@ async def seed_database():
     from auth import get_password_hash
     admin_user = {
         "id": "admin-1",
-        "email": "admin@sparible.com",
+        "email": "admin@supercommerce.com",
         "password": get_password_hash("admin123"),
         "name": "Admin User",
         "phone": "+91-9022967380",
@@ -290,10 +290,10 @@ async def seed_database():
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     
-    existing_admin = await db.users.find_one({"email": "admin@sparible.com"})
+    existing_admin = await db.users.find_one({"email": "admin@supercommerce.com"})
     if not existing_admin:
         await db.users.insert_one(admin_user)
-        print("Created admin user (email: admin@sparible.com, password: admin123)")
+        print("Created admin user (email: admin@supercommerce.com, password: admin123)")
     
     print("Database seeding completed!")
     client.close()

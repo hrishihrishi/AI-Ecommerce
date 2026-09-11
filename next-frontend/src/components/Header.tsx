@@ -1,11 +1,11 @@
-'use client';
+"use client";
 // Main header/navigation bar for the site, includes search and user/cart links.
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Search, ShoppingCart, Heart, User, Menu, X } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
-import { useCart } from '@/context/CartContext';
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Search, ShoppingCart, Heart, User, Menu, X } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/context/CartContext";
 
 interface Category {
   name: string;
@@ -13,13 +13,13 @@ interface Category {
 }
 
 const categories: Category[] = [
-  { name: 'Battery', path: '/products?category=Battery' },
-  { name: 'Display & Screens', path: '/products?category=Display & Screens' },
-  { name: 'Back Panel', path: '/products?category=Body & Housings' },
-  { name: 'Camera', path: '/products?category=Camera' },
-  { name: 'Charging Port', path: '/products?category=Charging Port' },
-  { name: 'Speaker', path: '/products?category=Speaker' },
-  { name: 'Laptop Parts', path: '/products?type=laptop' },
+  { name: "Battery", path: "/products?category=Battery" },
+  { name: "Display & Screens", path: "/products?category=Display & Screens" },
+  { name: "Back Panel", path: "/products?category=Body & Housings" },
+  { name: "Camera", path: "/products?category=Camera" },
+  { name: "Charging Port", path: "/products?category=Charging Port" },
+  { name: "Speaker", path: "/products?category=Speaker" },
+  { name: "Laptop Parts", path: "/products?type=laptop" },
 ];
 
 /**
@@ -29,21 +29,21 @@ const Header: React.FC = () => {
   const { user, logout } = useAuth();
   const { cartCount, wishlistCount } = useCart();
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/products?search=${encodeURIComponent(searchQuery)}`);
-      setSearchQuery('');
+      setSearchQuery("");
     }
   };
 
@@ -68,7 +68,7 @@ const Header: React.FC = () => {
                 <span className="text-white font-bold text-xl">S</span>
               </div>
               <span className="text-xl font-bold text-gray-800 hidden sm:block">
-                Sparible
+                Super Commerce
               </span>
             </Link>
 
