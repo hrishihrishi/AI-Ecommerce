@@ -3,7 +3,15 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, ShoppingCart, Heart, User, Menu, X } from "lucide-react";
+import {
+  Search,
+  ShoppingCart,
+  Heart,
+  User,
+  Menu,
+  X,
+  Package,
+} from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 
@@ -123,6 +131,20 @@ const Header: React.FC = () => {
                 )}
               </Link>
 
+              {/* Orders */}
+              <Link
+                href="/orders"
+                className="relative p-2 hover:bg-gray-100 rounded-lg transition"
+                data-testid="orders-icon"
+              >
+                <Package className="text-gray-700" size={24} />
+                {/* {ordersCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    {ordersCount}
+                  </span>
+                )} */}
+              </Link>
+
               {/* User Menu */}
               {user ? (
                 <div className="relative group hidden md:block">
@@ -208,8 +230,8 @@ const Header: React.FC = () => {
 
         {/* Category Pills Bar */}
         <div className="border-t border-gray-200 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="flex gap-2 overflow-x-auto py-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <div className="container mx-auto px-4 ">
+            <div className="flex gap-2 justify-center items-center overflow-x-auto py-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {categories.map((category) => (
                 <Link
                   key={category.name}

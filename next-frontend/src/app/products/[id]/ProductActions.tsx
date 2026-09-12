@@ -2,27 +2,41 @@
 
 import React from "react";
 import { ShoppingCart, Zap } from "lucide-react";
-import { useCart } from "@/context/CartContext"; // Adjust import path to your useCart location
+import { useCart } from "@/context/CartContext";
 
 interface ProductActionsProps {
-  product: any;
+  product: {
+    id: string;
+    name?: string;
+    image?: string;
+    price?: number;
+    discount_price?: number;
+  };
+  onBuyNow?: () => void;
 }
 
-export default function ProductActions({ product }: ProductActionsProps) {
-  const { addToCart, addToWishlist, removeFromWishlist, wishlist } = useCart();
+export default function ProductActions({
+  product,
+  onBuyNow,
+}: ProductActionsProps) {
+  const { addToCart } = useCart();
 
   const handleAddToCart = () => {
-    addToCart(product);
+    void addToCart(product.id);
   };
 
   const handleBuyNow = () => {
-    addToCart(product);
-    // Add redirect logic to checkout if needed (e.g., router.push('/checkout'))
+    if (onBuyNow) {
+      onBuyNow();
+      return;
+    }
+    // void addToCart(product.id);
   };
 
   return (
     <div className="flex flex-col sm:flex-row gap-3 mb-6">
       <button
+        type="button"
         onClick={handleAddToCart}
         className="flex-1 bg-white hover:bg-orange-50 text-orange-500 border-2 border-orange-500 font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer"
       >
@@ -31,6 +45,7 @@ export default function ProductActions({ product }: ProductActionsProps) {
       </button>
 
       <button
+        type="button"
         onClick={handleBuyNow}
         className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 transition-all cursor-pointer"
       >

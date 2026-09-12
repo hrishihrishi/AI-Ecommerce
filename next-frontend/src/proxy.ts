@@ -1,4 +1,5 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
+import axios from "axios";
 
 export default clerkMiddleware();
 
@@ -12,3 +13,13 @@ export const config = {
     "/(api|trpc)(.*)",
   ],
 };
+
+
+// Add this near the top of your component or in a central axios config file
+axios.interceptors.request.use((config) => {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});

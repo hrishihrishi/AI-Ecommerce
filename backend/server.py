@@ -433,14 +433,27 @@ async def create_order(order_data: OrderCreate, current_user: dict = Depends(get
     await db.orders.insert_one(order_dict)
     
     # Clear cart after order
-    await db.carts.update_one(
-        {"user_id": current_user['id']},
-        {"$set": {"items": [], "updated_at": datetime.now().isoformat()}}
-    )
+    # await db.carts.update_one(
+    #     {"user_id": current_user['id']},
+    #     {"$set": {"items": [], "updated_at": datetime.now().isoformat()}}
+    # )
     
     return order
 
+@api_router.delete("/orders/{order_id}/cancel")
+async def cancel_order(order_id: str, current_user: dict = Depends(get_current_user)):
+    order = await db.orders.find_one({"id": order_id, "user_id": current_user['id']})
+    if not order:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+    
+    # await db.orders.update_one(
+    #     {"id": order_id},
+    #     {"$set": {"order_status": "cancelled"}}
+    # )
 
+    await db.orders.delete_one({"id": order_id, "user_id": current_user['id']})
+    
+    return {"message": "Order cancelled successfully"}
 
 # ============= RAZORPAY ROUTES =============
 

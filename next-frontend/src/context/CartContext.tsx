@@ -1,6 +1,12 @@
 "use client";
 // Cart and wishlist context: exposes cart state and helper actions.
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
 
@@ -28,6 +34,32 @@ interface CartContextType {
   addToWishlist: (productId: string) => Promise<void>;
   removeFromWishlist: (productId: string) => Promise<void>;
   fetchCart: () => Promise<void>;
+  createOrder: (orderData: OrderCreatePayload) => Promise<void>;
+}
+
+export interface OrderItem {
+  product_id: string;
+  name?: string;
+  price?: number;
+  quantity: number;
+  image_url?: string;
+}
+
+export interface ShippingAddress {
+  full_name: string;
+  address_line1: string;
+  address_line2?: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  phone: string;
+}
+
+export interface OrderCreatePayload {
+  items: OrderItem[];
+  total_amount: number;
+  shipping_address: ShippingAddress;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -49,27 +81,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const { user, token } = useAuth();
   const [cart, setCart] = useState<Cart>({ items: [] });
   const [wishlist, setWishlist] = useState<Wishlist>({ items: [] });
-  const [cartCount, setCartCount] = useState(0);
-  const [wishlistCount, setWishlistCount] = useState(0);
 
-  useEffect(() => {
-    if (user && token) {
-      fetchCart();
-      fetchWishlist();
-    }
-  }, [user, token]);
+  const cartCount =
+    cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+  const wishlistCount = wishlist.items?.length || 0;
 
-  useEffect(() => {
-    setCartCount(
-      cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0,
-    );
-  }, [cart]);
-
-  useEffect(() => {
-    setWishlistCount(wishlist.items?.length || 0);
-  }, [wishlist]);
-
-  const fetchCart = async () => {
+  const fetchCart = useCallback(async () => {
     try {
       const response = await axios.get(`${API}/cart`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -78,9 +95,9 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error) {
       console.error("Error fetching cart:", error);
     }
-  };
+  }, [token]);
 
-  const fetchWishlist = async () => {
+  const fetchWishlist = useCallback(async () => {
     try {
       const response = await axios.get(`${API}/wishlist`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -89,7 +106,18 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error) {
       console.error("Error fetching wishlist:", error);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    if (!user || !token) return;
+
+    const timeoutId = setTimeout(() => {
+      void fetchCart();
+      void fetchWishlist();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [user, token, fetchCart, fetchWishlist]);
 
   const addToCart = async (productId: string, quantity = 1) => {
     if (!user) {
@@ -165,6 +193,36 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const createOrder = async (orderData: OrderCreatePayload) => {
+    if (!user) {
+      alert("Please login to place an order");
+      return;
+    }
+    try {
+      // Backend expects OrderItem.product_name and explicit price/quantity fields.
+      const backendPayload = {
+        items: orderData.items.map((it) => ({
+          product_id: it.product_id,
+          product_name: it.name ?? "",
+          quantity: it.quantity,
+          price: it.price ?? 0,
+        })),
+        total_amount: orderData.total_amount,
+        shipping_address: orderData.shipping_address,
+      };
+
+      const response = await axios.post(`${API}/orders/create`, backendPayload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // Refresh local cart state since backend clears cart after order creation
+      await fetchCart();
+      return response.data;
+    } catch (error) {
+      console.error("Error creating order:", error);
+      throw error;
+    }
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -178,6 +236,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         addToWishlist,
         removeFromWishlist,
         fetchCart,
+        createOrder,
       }}
     >
       {children}

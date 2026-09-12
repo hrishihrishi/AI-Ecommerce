@@ -1,7 +1,7 @@
-Pydantic data models used by the backend API.
+# Pydantic data models used by the backend API.
 
-Defines request/response schemas and domain models such as users,
-products, carts, orders, and reviews.
+# Defines request/response schemas and domain models such as users,
+# products, carts, orders, and reviews.
 
 
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
