@@ -4,6 +4,13 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
+  ClerkProvider,
+  Show,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
+import {
   Search,
   ShoppingCart,
   Heart,
@@ -21,13 +28,13 @@ interface Category {
 }
 
 const categories: Category[] = [
+  { name: "All", path: "/products?type=laptop" },
   { name: "Battery", path: "/products?category=Battery" },
   { name: "Display & Screens", path: "/products?category=Display & Screens" },
   { name: "Back Panel", path: "/products?category=Body & Housings" },
   { name: "Camera", path: "/products?category=Camera" },
   { name: "Charging Port", path: "/products?category=Charging Port" },
   { name: "Speaker", path: "/products?category=Speaker" },
-  { name: "Laptop Parts", path: "/products?type=laptop" },
 ];
 
 /**
@@ -145,6 +152,9 @@ const Header: React.FC = () => {
                 )} */}
               </Link>
 
+              <Show when="signed-in">
+                <UserButton />
+              </Show>
               {/* User Menu */}
               {user ? (
                 <div className="relative group hidden md:block">
@@ -157,14 +167,8 @@ const Header: React.FC = () => {
                       {user.name.split(" ")[0]}
                     </span>
                   </button>
+
                   <div className="absolute right-0 w-48 bg-white border rounded-lg shadow-lg pt-4 hidden group-hover:block">
-                    <Link
-                      href="/account"
-                      className="block px-4 py-2.5 hover:bg-gray-100 text-sm"
-                      data-testid="my-account-link"
-                    >
-                      My Account
-                    </Link>
                     <Link
                       href="/orders"
                       className="block px-4 py-2.5 hover:bg-gray-100 text-sm"
@@ -174,7 +178,7 @@ const Header: React.FC = () => {
                     </Link>
                     {user.is_admin && (
                       <Link
-                        href="/admin"
+                        href="/admin/manage_products"
                         className="block px-4 py-2.5 hover:bg-gray-100 text-sm"
                         data-testid="admin-link"
                       >
@@ -233,14 +237,18 @@ const Header: React.FC = () => {
           <div className="container mx-auto px-4 ">
             <div className="flex gap-2 justify-center items-center overflow-x-auto py-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {categories.map((category) => (
-                <Link
+                <a
                   key={category.name}
                   href={category.path}
+                  onClick={() => {
+                    // Refreshes current route data
+                    setTimeout(() => router.refresh(), 0);
+                  }}
                   className="px-4 py-2 bg-gray-100 hover:bg-orange-100 hover:text-orange-600 rounded-full text-sm font-medium whitespace-nowrap transition"
                   data-testid={`category-pill-${category.name}`}
                 >
                   {category.name}
-                </Link>
+                </a>
               ))}
             </div>
           </div>

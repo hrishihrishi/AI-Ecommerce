@@ -328,7 +328,7 @@ export default function AdminProductsPage() {
           onClick={clearFilters}
           className="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-3 py-2 rounded-lg text-sm flex items-center gap-1.5 transition-colors cursor-pointer"
         >
-          <RotateCcw className="w-4 h-4" /> Clear
+          <RotateCcw className="w-4 h-4" /> Refresh
         </button>
       </div>
 

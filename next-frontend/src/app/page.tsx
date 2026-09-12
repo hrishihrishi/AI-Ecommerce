@@ -292,7 +292,7 @@ const Home: React.FC = () => {
       data-testid="home-page"
     >
       {/* Category Icons */}
-      <section className="bg-white/80 backdrop-blur-md py-6 border-b border-gray-200/50 sticky top-0 z-40 shadow-sm">
+      {/* <section className="bg-white/80 backdrop-blur-md py-6 border-b border-gray-200/50 sticky top-0 z-40 shadow-sm">
         <div className="container mx-auto px-4">
           <div className="flex gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {categoryData.map((cat, idx) => (
@@ -314,7 +314,7 @@ const Home: React.FC = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Hero Banner */}
       <section className="relative h-[450px] md:h-[550px] overflow-hidden">

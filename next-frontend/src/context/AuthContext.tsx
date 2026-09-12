@@ -2,6 +2,7 @@
 // Authentication context: provides login, register, logout and current user state.
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import { useUser, useClerk } from "@clerk/nextjs";
 
 export interface User {
   id: string;
@@ -40,6 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const { signOut: clerkSignOut } = useClerk();
 
   // Load token from localStorage only on client
   useEffect(() => {
@@ -74,7 +76,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     password: string,
   ): Promise<{ success: boolean; error?: string }> => {
     try {
-      const response = await axios.post(`${API}/auth/login`, { email, password });
+      const response = await axios.post(`${API}/auth/login`, { email, password:email });
       const { access_token, user } = response.data as { access_token: string; user: User };
       setToken(access_token);
       setUser(user);
@@ -93,7 +95,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     phone?: string,
   ): Promise<{ success: boolean; error?: string }> => {
     try {
-      const response = await axios.post(`${API}/auth/register`, { name, email, password, phone });
+      const response = await axios.post(`${API}/auth/register`, { name, email, password:email, phone });
       const { access_token, user } = response.data as { access_token: string; user: User };
       setToken(access_token);
       setUser(user);
@@ -105,10 +107,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    
     setToken(null);
     setUser(null);
     if (typeof window !== 'undefined') localStorage.removeItem('token');
+    await clerkSignOut({ redirectUrl: "/login" });
   };
 
   return (
@@ -118,6 +122,54 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+
+
+
+
+
+export function AuthSyncHandler() {
+  const { isLoaded, isSignedIn, user } = useUser(); //
+  const { getToken } = useAuth(); //
+
+  useEffect(() => {
+    const syncUserWithBackend = async () => {
+      if (isLoaded && isSignedIn && user) {
+        //
+        // Get primary email and name from Clerk
+        const email = user.primaryEmailAddress?.emailAddress; //[cite: 1]
+        const name =
+          user.fullName ||
+          `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim(); //[cite: 1]
+
+        const token = await getToken(); //[cite: 1, 2]
+
+        try {
+          // Send to your backend
+          await axios.post(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`,
+            {
+              clerk_id: user.id, //[cite: 1]
+              email: email, //[cite: 1]
+              name: name, //[cite: 1]
+              password: email
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`, //[cite: 1, 2]
+              },
+            },
+          );
+        } catch (error) {
+          console.error("Failed to sync user with backend:", error);
+        }
+      }
+    };
+
+    syncUserWithBackend();
+  }, [isLoaded, isSignedIn, user, getToken]);
+
+  return null; // Invisible component placed in layout or navbar
+}
 
 
 

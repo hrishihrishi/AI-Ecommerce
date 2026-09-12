@@ -5,6 +5,14 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
+import { FcGoogle } from "react-icons/fc";
+import {
+  ClerkProvider,
+  Show,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 
 /**
  * Login form component that uses `useAuth` to sign in users.
@@ -53,7 +61,25 @@ const Login = () => {
             </div>
           )}
 
+          {/* <SignInButton /> */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            <Show when="signed-out">
+              <SignUpButton>
+                <div className="flex items-center justify-center">
+                  <button
+                    className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer shadow-sm transition-all"
+                    aria-label="Sign up using Google"
+                  >
+                    <FcGoogle className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <span>Sign Up with Google</span>
+                  </button>
+                </div>
+              </SignUpButton>
+            </Show>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email
