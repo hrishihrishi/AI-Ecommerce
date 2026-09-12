@@ -4,7 +4,7 @@ import React, { useState } from "react";
 // import { Link, useNavigate } from "react-router-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth, useClerkSyncToBackend } from "../../context/AuthContext";
 import {
   ClerkProvider,
   Show,
@@ -14,11 +14,11 @@ import {
 } from "@clerk/nextjs";
 import { FcGoogle } from "react-icons/fc";
 
-
 /**
  * Registration form component that creates new user accounts via `useAuth`.
  */
 const Register = () => {
+  useClerkSyncToBackend();
   const { register } = useAuth();
   // const navigate = useNavigate();
   const router = useRouter();

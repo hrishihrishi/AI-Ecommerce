@@ -4,7 +4,7 @@ import React, { useState } from "react";
 // import { Link, useNavigate } from 'react-router-dom';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth, useClerkSyncToBackend } from "../../context/AuthContext";
 import { FcGoogle } from "react-icons/fc";
 import {
   ClerkProvider,
@@ -18,6 +18,7 @@ import {
  * Login form component that uses `useAuth` to sign in users.
  */
 const Login = () => {
+  useClerkSyncToBackend();
   const { login } = useAuth();
   // const navigate = useNavigate();
   const router = useRouter();
