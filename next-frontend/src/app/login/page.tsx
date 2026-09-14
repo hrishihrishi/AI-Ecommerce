@@ -26,7 +26,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -36,7 +36,7 @@ const Login = () => {
     if (result.success) {
       router.replace("/");
     } else {
-      setError(result.error);
+      setError(result.error ?? "Login failed. Please try again.");
     }
     setLoading(false);
   };

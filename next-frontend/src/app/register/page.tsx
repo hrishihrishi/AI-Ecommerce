@@ -32,7 +32,7 @@ const Register = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
@@ -58,7 +58,7 @@ const Register = () => {
     if (result.success) {
       router.replace("/");
     } else {
-      setError(result.error);
+      setError(result.error ?? "Registration failed. Please try again.");
     }
     setLoading(false);
   };
