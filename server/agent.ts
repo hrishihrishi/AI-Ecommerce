@@ -15,7 +15,6 @@ import { MongoClient } from "mongodb";
 import { z } from "zod";
 import "dotenv/config";
 
-
 // takes a callback function returns else retries 'maxRetries' times
 async function retryWithBackoff<T>(
   fn: () => Promise<T>,
@@ -43,14 +42,17 @@ export async function callAgent(
   thread_id: string,
 ) {
   try {
-
     // initialize the MongoDB client and connect to the database
     const dbName = "vector_database";
     const db = client.db(dbName);
     const collection = db.collection("itemsWsummary");
 
-    console.log("Call Agent called with query:", query, "and thread_id:", thread_id);
-
+    console.log(
+      "Call Agent called with query:",
+      query,
+      "and thread_id:",
+      thread_id,
+    );
 
     // Define the state graph and its root annotation [KNOW MORE]
     const GraphState = Annotation.Root({
@@ -61,8 +63,7 @@ export async function callAgent(
 
     // Pass user query.
     const itemLookupTool = tool(
-    
-    // user query passed to the tool. Does vector search on DB, if no results, does text search on DB. Returns results as JSON string.
+      // user query passed to the tool. Does vector search on DB, if no results, does text search on DB. Returns results as JSON string.
       async ({ query, n = 10 }) => {
         try {
           console.log("Item lookup tool called with query:", query);
@@ -149,7 +150,8 @@ export async function callAgent(
       // tool metadata for the agent to understand how to use the tool.
       {
         name: "item_lookup",
-        description: "Gathers product details from the database (named vector_database) for the E-commerce Chatbot Agent",
+        description:
+          "Gathers product details from the database (named vector_database) for the E-commerce Chatbot Agent",
         schema: z.object({
           query: z.string().describe("The search query"),
           n: z
@@ -172,7 +174,6 @@ export async function callAgent(
       apiKey: process.env.GOOGLE_API_KEY,
     }).bindTools(tools);
 
-
     // Desicion making function to end or call tools.
     function shouldContinue(state: typeof GraphState.State) {
       const messages = state.messages;
@@ -184,8 +185,7 @@ export async function callAgent(
       return "__end__";
     }
 
-
-// Calls the model with the current state, and returns the next state. This is where the model generates a response based on the current conversation state.
+    // Calls the model with the current state, and returns the next state. This is where the model generates a response based on the current conversation state.
     async function callModel(state: typeof GraphState.State) {
       return retryWithBackoff(async () => {
         const prompt = ChatPromptTemplate.fromMessages([
@@ -205,7 +205,6 @@ export async function callAgent(
               Current time: {time}`,
           ],
           new MessagesPlaceholder("messages"),
-        
         ]);
 
         const formattedPrompt = await prompt.formatMessages({
@@ -217,7 +216,6 @@ export async function callAgent(
         return { messages: [result] };
       });
     }
-
 
     // ReACT architecture for Agent to decide when to call tools and when to respond to user.
     const workflow = new StateGraph(GraphState)
@@ -242,7 +240,8 @@ export async function callAgent(
       },
     );
 
-    const response = finalState.messages[finalState.messages.length - 1].content;
+    const response =
+      finalState.messages[finalState.messages.length - 1].content;
     console.log("Agent response:", response);
 
     return response;

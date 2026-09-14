@@ -640,9 +640,9 @@ async def update_order_status(order_id: str, order_status: str, current_user: di
 
 # ============= ROOT ROUTE =============
 
+# Health/root endpoint returning basic service metadata.
 @api_router.get("/")
 async def root():
-    """Health/root endpoint returning basic service metadata."""
     return {"message": "Super Commerce E-commerce API", "version": "1.0.0"}
 
 # Include the router in the main app

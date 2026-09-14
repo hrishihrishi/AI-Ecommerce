@@ -2,6 +2,15 @@
 
 A full-stack e-commerce application built with Next.js, React, TypeScript, Tailwind CSS, FastAPI, MongoDB, and AI-powered shopping assistance. The platform supports product browsing, filtering, searching, cart and wishlist management, checkout, and an AI shopping assistant with vector search and conversational support.
 
+### Admin Credentials
+
+Username: admin@supercommerce.com
+Password: admin123
+
+## AI Chat
+
+![AI Chat](docs/AI_chat.png)
+
 ## GitHub repository
 
 - https://github.com/hrishihrishi/AI-Ecommerce
@@ -135,6 +144,8 @@ AI-ecommerce/
 - Clerk frontend keys for Google auth
 
 ## Environment Setup
+
+Note: env variables are pushed to github, but if any env is invalid due to security reasons, please fetch your own env variable.
 
 ### Backend
 
