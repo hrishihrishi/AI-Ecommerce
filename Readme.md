@@ -155,9 +155,15 @@ CORS_ORIGINS="http://localhost:3000"
 Set up the required public environment variables in the `next-frontend` app, for example:
 
 ```bash
-NEXT_PUBLIC_BACKEND_URL="http://localhost:8000"
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="your_clerk_publishable_key"
-CLERK_SECRET_KEY="your_clerk_secret_key"
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+
+# Clerk API keys
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+
+# AI Chat Server URL
+NEXT_PUBLIC_CHAT_SERVER_URL=http://localhost:8005
+MONGODB_URI="your_mongodb_connection_string"
 ```
 
 ### AI Server
@@ -165,7 +171,7 @@ CLERK_SECRET_KEY="your_clerk_secret_key"
 Create a `.env` file inside the `server` directory with your MongoDB and Gemini configuration:
 
 ```bash
-MONGODB_ATLAS_URI="your_mongodb_uri"
+MONGODB_ATLAS_URI="your_mongodb_connection_string"
 GOOGLE_API_KEY="your_google_gemini_key"
 ```
 
@@ -177,7 +183,7 @@ GOOGLE_API_KEY="your_google_gemini_key"
 ./start-backend.sh
 ```
 
-This starts the FastAPI backend on port 8000.
+This starts the FastAPI backend on http://localhotst:8000.
 
 ### 2) Start the frontend
 
@@ -186,7 +192,7 @@ cd next-frontend
 npm run dev
 ```
 
-This starts the Next.js frontend, usually on port 3000.
+This starts the Next.js frontend, usually on http://localhotst:3000.
 
 ### 3) Start the AI server
 
@@ -195,7 +201,7 @@ cd server
 npm run dev
 ```
 
-This starts the LangChain / LangGraph AI service used for assistant and retrieval workflows.
+This starts the LangChain / LangGraph AI service used for assistant and retrieval workflows on http://localhotst:8005 .
 
 ## Frontend Features
 
