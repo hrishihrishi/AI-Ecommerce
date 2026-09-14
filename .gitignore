@@ -90,7 +90,6 @@ android-sdk/ -e
 *.emergent
 *.test_reports
 FILE_LIST.txt
-Readme.md
 SETUP_GUIDE.md
 test_result.md
 yarn.lock
